@@ -26,7 +26,7 @@ func main() {
 		Short: "Quick git wrapper",
 		Run: func(cmd *cobra.Command, args []string) {
 			globalConfig()
-			git.Status(cfgStatus)
+			Status()
 		},
 	}
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
