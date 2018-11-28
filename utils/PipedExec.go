@@ -69,6 +69,10 @@ func (Self *PipedExec) Run(out io.Writer, err io.Writer) error {
 		if nil != err {
 			panic("Failed:" + cmd.cmd.Path)
 		}
+		err = cmd.cmd.Wait()
+		if nil != err {
+			return err
+		}
 	}
 
 	return Self.cmds[lastIdx].cmd.Wait()
