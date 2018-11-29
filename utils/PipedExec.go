@@ -56,12 +56,12 @@ func (Self *PipedExec) Run(out io.Writer, err io.Writer) error {
 		if cmd.stderrRedirection == StderrRedirectNone {
 			cmd.cmd.Stderr = err
 		}
+		cmd.cmd.Stdout = out
 	}
 	lastIdx := len(Self.cmds) - 1
 	if lastIdx < 0 {
 		return errors.New("Empty command list")
 	}
-	Self.cmds[lastIdx].cmd.Stdout = out
 
 	for _, cmd := range Self.cmds {
 		log.Println(cmd.cmd.Path, cmd.cmd.Args)
