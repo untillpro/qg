@@ -2,12 +2,11 @@ package git
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 
-	coreos "github.com/coreos/go-semver/semver"
 	"github.com/untillpro/gochips"
+	"github.com/untillpro/qs/utils"
 	"github.com/untillpro/qs/vcs"
 )
 
@@ -54,10 +53,8 @@ func Release() {
 
 	// *************************************************
 	gochips.Doing("Reading current version")
-	dat, err := ioutil.ReadFile("version")
+	currentVersion, err := utils.ReadVersion()
 	gochips.ExitIfError(err, "Error reading file 'version'")
-	sdat := string(dat)
-	currentVersion := *coreos.New(sdat)
 	gochips.ExitIfFalse(len(currentVersion.PreRelease) > 0, "pre-release part of version does not exist: "+currentVersion.String())
 
 	// Calculate target version
@@ -72,7 +69,7 @@ func Release() {
 
 	// *************************************************
 	gochips.Doing("Updating 'version' file")
-	gochips.ExitIfError(ioutil.WriteFile("version", []byte(targetVersion.String()), 0644))
+	gochips.ExitIfError(targetVersion.Save())
 
 	// *************************************************
 	gochips.Doing("Commiting target version")
@@ -101,7 +98,8 @@ func Release() {
 	newVersion := currentVersion
 	{
 		newVersion.Minor++
-		gochips.ExitIfError(ioutil.WriteFile("version", []byte(newVersion.String()), 0644))
+		newVersion.PreRelease = "SNAPSHOT"
+		gochips.ExitIfError(newVersion.Save())
 	}
 
 	// *************************************************
